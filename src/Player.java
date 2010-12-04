@@ -14,7 +14,7 @@ import net.minecraft.server.MinecraftServer;
  * 
  * @author James
  */
-public class Player extends LivingEntity {
+public class Player extends HumanEntity {
     private static final Logger log = Logger.getLogger("Minecraft");
     private int id = -1;
     private String prefix = "";
@@ -39,8 +39,16 @@ public class Player extends LivingEntity {
      * Returns the entity we're wrapping.
      * @return
      */
-    public es getEntity() {
-        return (es)entity;
+    public et getEntity() {
+        return (et)entity;
+    }
+    
+    /**
+     * Returns if the player is still connected
+     * @return
+     */
+    public boolean isConnected() {
+        return !getEntity().a.c;
     }
 
     /**
@@ -1005,16 +1013,16 @@ public class Player extends LivingEntity {
      * @param amount
      */
     public void giveItemDrop(int itemId, int amount) {
-        es player = getEntity();
+        et player = getEntity();
         if (amount == -1) {
-            player.a(new hm(itemId, 255));
+            player.a(new hn(itemId, 255));
         } else {
             int temp = amount;
             do {
                 if (temp - 64 >= 64) {
-                    player.a(new hm(itemId, 64));
+                    player.a(new hn(itemId, 64));
                 } else {
-                    player.a(new hm(itemId, temp));
+                    player.a(new hn(itemId, temp));
                 }
                 temp -= 64;
             } while (temp > 0);
@@ -1145,15 +1153,6 @@ public class Player extends LivingEntity {
         }
 
         return isInGroup;
-    }
-
-    /**
-     * Returns the player's name
-     * 
-     * @return
-     */
-    public String getName() {
-        return getEntity().at;
     }
 
     /**
@@ -1445,7 +1444,7 @@ public class Player extends LivingEntity {
      * 
      * @return
      */
-    public es getUser() {
+    public et getUser() {
         return getEntity();
     }
 
@@ -1454,7 +1453,7 @@ public class Player extends LivingEntity {
      * 
      * @param er
      */
-    public void setUser(es player) {
+    public void setUser(et player) {
         this.entity = player;
         this.inventory = new Inventory(this, Inventory.Type.Inventory);
         this.craftingTable = new Inventory(this, Inventory.Type.CraftingTable);
@@ -1462,7 +1461,13 @@ public class Player extends LivingEntity {
     }
 
     public void teleportTo(double x, double y, double z, float rotation, float pitch) {
-        getEntity().a.a(x, y, z, rotation, pitch);
+        et player = getEntity();
+        
+        // If player is in vehicle - eject them before they are teleported.
+        if (player.k != null) {
+            player.e(player.k);
+        }
+        player.a.a(x, y, z, rotation, pitch);
     }
 
     /**
