@@ -109,9 +109,7 @@ public class ji extends fc implements ey {
                 ea tmp = this.e.k;
                 this.e.k();
                 this.e.c(d6, 0.0D, d7);
-
-                // hMod: +1 to remove risk of falling through ground.
-                this.e.b(d3, d4+1, d5, f1, f2);
+                this.e.b(d3, d4, d5, f1, f2);
                 this.e.s = d6;
                 this.e.u = d7;
 
@@ -231,7 +229,8 @@ public class ji extends fc implements ey {
     @Override
     public void a(ie paramie) {
         this.e.am.a[this.e.am.d] = this.k;
-        boolean bool = this.d.e.B = this.d.f.g(this.e.at);
+        // hMod: We allow admins and ops to dig!
+        boolean bool = this.d.e.B = this.d.f.g(this.e.at) || getPlayer().isAdmin();
         int m = 0;
         if (paramie.e == 0) {
             m = 1;
@@ -327,7 +326,7 @@ public class ji extends fc implements ey {
     @Override
     public void a(gb paramgb) {
         //System.out.println(String.format("BlockPlacePacket: %d @ [%d,%d,%d] dir %s", paramgb.a, paramgb.b, paramgb.c, paramgb.d, paramgb.e ));
-        // hMod allow admins to dig!
+        // hMod: We allow admins and ops to build!
         boolean bool = d.e.B = (d.f.g(getPlayer().getName()) || getPlayer().isAdmin());
 
         // hMod: Store block data to call hooks
@@ -366,7 +365,11 @@ public class ji extends fc implements ey {
         if (paramgb.e == 255) {
             hn localhn1 = paramgb.a >= 0 ? new hn(paramgb.a) : null;
             // hMod: call our version with extra blockClicked/blockPlaced
-            ((Digging)this.e.c).a(this.e, this.d.e, localhn1, blockClicked, blockPlaced);
+            if (blockPlaced != null) {
+                // Set the type of block to what it currently is
+                blockPlaced.setType(etc.getServer().getBlockIdAt(blockPlaced.getX(), blockPlaced.getY(), blockPlaced.getZ()));
+            }
+            ((Digging)this.e.c).a(this.e, this.d.e, localhn1, blockPlaced, blockClicked);
         } else {
             int m = paramgb.b;
             int n = paramgb.c;
@@ -385,7 +388,7 @@ public class ji extends fc implements ey {
             etc.getLoader().callHook(PluginLoader.Hook.BLOCK_CREATED, player, blockPlaced, blockClicked, paramgb.a);
 
             // hMod: If we were building inside spawn, bail! (unless ops/admin)
-            if ((i4 > etc.getInstance().getSpawnProtectionSize() || bool) && player.canBuild()) {
+            if (((i4 > etc.getInstance().getSpawnProtectionSize() && !etc.getInstance().isOnItemBlacklist(paramgb.a)) || bool) && player.canBuild()) {
                 hn localhn = paramgb.a >= 0 ? new hn(paramgb.a) : null;
                 this.e.c.a(this.e, this.d.e, localhn, m, n, i1, i2);
             } else {
