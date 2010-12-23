@@ -450,8 +450,8 @@ public class Player extends HumanEntity implements MessageReceiver {
                     sendMessage(Colors.Rose + "Can't find user " + split[1] + ".");
                 }
             } else if (split[0].equalsIgnoreCase("/ban")) {
-                if (split.length < 2) {
-                    sendMessage(Colors.Rose + "Correct usage is: /ban [player] <reason> (optional)");
+                if (split.length < 3) {
+                    sendMessage(Colors.Rose + "Correct usage is: /ban [player] [reason]");
                     return;
                 }
 
@@ -470,10 +470,11 @@ public class Player extends HumanEntity implements MessageReceiver {
 
                     if (split.length > 2) {
                         player.kick("Banned by " + getName() + ": " + etc.combineSplit(2, split, " "));
+                        log.log(Level.INFO, "Banning " + player.getName() + " reason: " + etc.combineSplit(2, split, " "));
                     } else {
                         player.kick("Banned by " + getName() + ".");
+                        log.log(Level.INFO, "Banning " + player.getName());
                     }
-                    log.log(Level.INFO, "Banning " + player.getName());
                     sendMessage(Colors.Rose + "Banning " + player.getName());
                 } else {
                     // sendMessage(Colors.Rose + "Can't find user " + split[1] + ".");
