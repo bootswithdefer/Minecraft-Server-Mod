@@ -4,14 +4,14 @@
  * @author James
  */
 public class Sign implements ComplexBlock {
-    private ko sign;
+    private kp sign;
 
     /**
      * Creates a sign interface
      * 
      * @param localav
      */
-    public Sign(ko localay) {
+    public Sign(kp localay) {
         this.sign = localay;
     }
 
@@ -53,6 +53,10 @@ public class Sign implements ComplexBlock {
 
     public int getZ() {
         return sign.d;
+    }
+
+    public Block getBlock() {
+        return etc.getServer().getBlockAt(getX(), getY(), getZ());
     }
 
     public void update() {
