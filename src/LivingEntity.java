@@ -13,7 +13,7 @@ public class LivingEntity extends BaseEntity {
      * Interface for living entities
      * @param livingEntity
      */
-    public LivingEntity(lc livingEntity) {
+    public LivingEntity(mj livingEntity) {
         super(livingEntity);
     }
     
@@ -21,8 +21,8 @@ public class LivingEntity extends BaseEntity {
      * Returns the entity we're wrapping.
      * @return
      */
-    public lc getEntity() {
-        return (lc)entity;
+    public mj getEntity() {
+        return (mj)entity;
     }
 
     /**
@@ -31,7 +31,7 @@ public class LivingEntity extends BaseEntity {
      * @return health
      */
     public int getHealth() {
-        return getEntity().ba;
+        return getEntity().aZ;
     }
 
     /**
@@ -56,7 +56,7 @@ public class LivingEntity extends BaseEntity {
             health = -1;
         if (health > 20)
             health = 20;
-        getEntity().ba = health;
+        getEntity().aZ = health;
     }
 
     /**
@@ -65,7 +65,7 @@ public class LivingEntity extends BaseEntity {
      * @return
      */
     public int getDeathTicks() {
-        return getEntity().bf;
+        return getEntity().be;
     }
 
     /**
@@ -75,7 +75,7 @@ public class LivingEntity extends BaseEntity {
      * @param ticks
      */
     public void setDeathTicks(int ticks) {
-        getEntity().bf = ticks;
+        getEntity().be = ticks;
     }
 
     /**
@@ -104,7 +104,7 @@ public class LivingEntity extends BaseEntity {
      * @return
      */
     public int getLastDamage() {
-        return getEntity().bw;
+        return getEntity().bv;
     }
 
     /**
@@ -114,6 +114,6 @@ public class LivingEntity extends BaseEntity {
      * @param amount
      */
     public void setLastDamage(int amount) {
-        getEntity().bw = amount;
+        getEntity().bv = amount;
     }
 }
