@@ -472,6 +472,7 @@ public class Player extends HumanEntity implements MessageReceiver {
                         player.kick("Banned by " + getName() + ": " + etc.combineSplit(2, split, " "));
                     else
                         player.kick("Banned by " + getName() + ".");
+                    log.log(Level.INFO, "Banning " + player.getName());
                     sendMessage(Colors.Rose + "Banning " + player.getName());
                 } else {
                     // sendMessage(Colors.Rose + "Can't find user " + split[1] + ".");
