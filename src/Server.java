@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
+
 import net.minecraft.server.MinecraftServer;
 
 /**
@@ -27,27 +28,29 @@ public class Server {
      *            Message text to send
      */
     public void messageAll(String msg) {
-        this.server.f.a(new bz(msg));
+        server.f.a(new OPacket3Chat(msg));
     }
 
     /**
      * Bans specified player
-     *
-     * @param player Name of the player to ban
-     *
+     * 
+     * @param player
+     *            Name of the player to ban
+     * 
      */
     public void ban(String player) {
-        this.server.f.a(player);
+        server.f.a(player);
     }
 
     /**
      * Unbans specified user
-     *
-     * @param player Player name to unban
-     *
+     * 
+     * @param player
+     *            Player name to unban
+     * 
      */
     public void unban(String player) {
-        this.server.f.b(player);
+        server.f.b(player);
     }
 
     /**
@@ -111,9 +114,8 @@ public class Server {
     public long getRelativeTime() {
         long time = (server.e.e % 24000);
         // Java modulus is stupid.
-        if (time < 0) {
+        if (time < 0)
             time += 24000;
-        }
         return time;
     }
 
@@ -136,9 +138,8 @@ public class Server {
     public void setRelativeTime(long time) {
         long margin = (time - server.e.e) % 24000;
         // Java modulus is stupid.
-        if (margin < 0) {
+        if (margin < 0)
             margin += 24000;
-        }
         server.e.e += margin;
     }
 
@@ -162,20 +163,19 @@ public class Server {
         name = name.toLowerCase();
 
         for (Object player : server.f.b) {
-            String playerName = ((fy) player).aw;
+            String playerName = ((OEntityPlayerMP) player).aw;
 
             if (playerName.toLowerCase().equals(name)) {
                 // Perfect match found
-                lastPlayer = ((fy) player).getPlayer();
+                lastPlayer = ((OEntityPlayerMP) player).getPlayer();
                 break;
             }
             if (playerName.toLowerCase().indexOf(name.toLowerCase()) != -1) {
                 // Partial match
-                if (lastPlayer != null) {
+                if (lastPlayer != null)
                     // Found multiple
                     return null;
-                }
-                lastPlayer = ((fy) player).getPlayer();
+                lastPlayer = ((OEntityPlayerMP) player).getPlayer();
             }
         }
 
@@ -189,128 +189,121 @@ public class Server {
      * @return
      */
     public Player getPlayer(String name) {
-        fy user = server.f.h(name);
+        OEntityPlayerMP user = server.f.h(name);
         return user == null ? null : user.getPlayer();
     }
 
     /**
      * Returns the player list.
+     * 
      * @return list of players
      */
     public List<Player> getPlayerList() {
         List<Player> toRet = new ArrayList<Player>();
-        for (Object o : server.f.b) {
-            toRet.add(((fy) o).getPlayer());
-        }
+        for (Object o : server.f.b)
+            toRet.add(((OEntityPlayerMP) o).getPlayer());
         return toRet;
     }
 
     /**
      * Returns the list of mobs in all open chunks.
+     * 
      * @return list of mobs
      */
     public List<Mob> getMobList() {
         List<Mob> toRet = new ArrayList<Mob>();
-        for (Object o : server.e.b) {
-            //TODO: fix.
-            if (o instanceof hq || o instanceof br) {
-                toRet.add(new Mob((mj) o));
-            }
-        }
+        for (Object o : server.e.b)
+            if (o instanceof OEntityMobs || o instanceof OEntityGhast)
+                toRet.add(new Mob((OEntityLiving) o));
         return toRet;
     }
 
     /**
      * Returns the list of animals in all open chunks.
+     * 
      * @return list of animals
      */
     public List<Mob> getAnimalList() {
         List<Mob> toRet = new ArrayList<Mob>();
-        for (Object o : server.e.b) {
-            if (o instanceof bl) {
-                toRet.add(new Mob((mj) o));
-            }
-        }
+        for (Object o : server.e.b)
+            if (o instanceof OEntityAnimals)
+                toRet.add(new Mob((OEntityLiving) o));
         return toRet;
     }
 
     /**
      * Returns the list of minecarts in all open chunks.
+     * 
      * @return list of minecarts
      */
     public List<Minecart> getMinecartList() {
         List<Minecart> toRet = new ArrayList<Minecart>();
-        for (Object o : server.e.b) {
-            if (o instanceof lw) {
-                toRet.add(new Minecart((lw) o));
-            }
-        }
+        for (Object o : server.e.b)
+            if (o instanceof OEntityMinecart)
+                toRet.add(((OEntityMinecart) o).cart);
         return toRet;
     }
 
     /**
      * Returns the list of boats in all open chunks.
+     * 
      * @return list of boats
      */
     public List<Boat> getBoatList() {
         List<Boat> toRet = new ArrayList<Boat>();
-        for (Object o : server.e.b) {
-            if (o instanceof gu) {
-                toRet.add(new Boat((gu) o));
-            }
-        }
+        for (Object o : server.e.b)
+            if (o instanceof OEntityBoat)
+                toRet.add(((OEntityBoat) o).boat);
         return toRet;
     }
 
     /**
      * Returns the list of all entities in the server in open chunks.
+     * 
      * @return list of entities
      */
     public List<BaseEntity> getEntityList() {
         List<BaseEntity> toRet = new ArrayList<BaseEntity>();
-        for (Object o : server.e.b) {
-            if (o instanceof hq || o instanceof br || o instanceof bl) {
-                toRet.add(new Mob((mj) o));
-            } else if (o instanceof lw) {
-                toRet.add(new Minecart((lw) o));
-            } else if (o instanceof gu) {
-                toRet.add(new Boat((gu) o));
-            } else if (o instanceof fy) {
-                toRet.add(((fy)o).getPlayer());
-            }
-        }
+        for (Object o : server.e.b)
+            if (o instanceof OEntityMobs || o instanceof OEntityGhast || o instanceof OEntityAnimals)
+                toRet.add(new Mob((OEntityLiving) o));
+            else if (o instanceof OEntityMinecart)
+                toRet.add(((OEntityMinecart) o).cart);
+            else if (o instanceof OEntityBoat)
+                toRet.add(((OEntityBoat) o).boat);
+            else if (o instanceof OEntityPlayerMP)
+                toRet.add(((OEntityPlayerMP) o).getPlayer());
         return toRet;
     }
 
     /**
-     * Returns the list of all living entities (players, animals, mobs) in open chunks.
+     * Returns the list of all living entities (players, animals, mobs) in open
+     * chunks.
+     * 
      * @return list of living entities
      */
     public List<LivingEntity> getLivingEntityList() {
         List<LivingEntity> toRet = new ArrayList<LivingEntity>();
-        for (Object o : server.e.b) {
-            if (o instanceof hq || o instanceof br || o instanceof bl) {
-                toRet.add(new Mob((mj) o));
-            } else if (o instanceof fy) {
-                toRet.add(((fy)o).getPlayer());
-            }
-        }
+        for (Object o : server.e.b)
+            if (o instanceof OEntityMobs || o instanceof OEntityGhast || o instanceof OEntityAnimals)
+                toRet.add(new Mob((OEntityLiving) o));
+            else if (o instanceof OEntityPlayerMP)
+                toRet.add(((OEntityPlayerMP) o).getPlayer());
         return toRet;
     }
 
     /**
      * Returns the list of vehicles in open chunks.
+     * 
      * @return list of vehicles
      */
     public List<BaseVehicle> getVehicleEntityList() {
         List<BaseVehicle> toRet = new ArrayList<BaseVehicle>();
-        for (Object o : server.e.b) {
-            if (o instanceof lw) {
-                toRet.add(new Minecart((lw) o));
-            } else if (o instanceof gu) {
-                toRet.add(new Boat((gu) o));
-            }
-        }
+        for (Object o : server.e.b)
+            if (o instanceof OEntityMinecart)
+                toRet.add(((OEntityMinecart) o).cart);
+            else if (o instanceof OEntityBoat)
+                toRet.add(((OEntityBoat) o).boat);
         return toRet;
     }
 
@@ -322,7 +315,7 @@ public class Server {
     public Location getSpawnLocation() {
         Location spawn = new Location();
         spawn.x = (server.e.m + 0.5D);
-        spawn.y = server.e.e(this.server.e.m, this.server.e.o) + 1.5D;
+        spawn.y = server.e.e(server.e.m, server.e.o) + 1.5D;
         spawn.z = server.e.o + 0.5D;
         spawn.rotX = 0.0F;
         spawn.rotY = 0.0F;
@@ -381,11 +374,10 @@ public class Server {
      */
     public boolean setBlockData(int x, int y, int z, int data) {
         boolean toRet = server.e.d(x, y, z, data);
-        etc.getMCServer().f.a(new gw(x, y, z, etc.getMCServer().e));
+        etc.getMCServer().f.a(new OPacket53BlockChange(x, y, z, etc.getMCServer().e));
         ComplexBlock block = getComplexBlock(x, y, z);
-        if (block != null) {
+        if (block != null)
             block.update();
-        }
         return toRet;
     }
 
@@ -429,7 +421,7 @@ public class Server {
      * Returns the complex block at the specified location. Null if there's no
      * complex block there. This will also find complex-blocks spanning multiple
      * spaces, such as double chests.
-     *
+     * 
      * @param block
      * @return complex block
      */
@@ -453,18 +445,16 @@ public class Server {
     public ComplexBlock getComplexBlock(int x, int y, int z) {
         ComplexBlock result = getOnlyComplexBlock(x, y, z);
 
-        if (result != null) {
+        if (result != null)
             if (result instanceof Chest) {
-                Chest chest = (Chest)result;
+                Chest chest = (Chest) result;
                 result = chest.findAttachedChest();
 
-                if (result != null) {
+                if (result != null)
                     return result;
-                } else {
+                else
                     return chest;
-                }
             }
-        }
 
         return result;
     }
@@ -472,7 +462,7 @@ public class Server {
     /**
      * Returns the only complex block at the specified location. Null if there's
      * no complex block there.
-     *
+     * 
      * @param block
      * @return complex block
      */
@@ -483,7 +473,7 @@ public class Server {
     /**
      * Returns the complex block at the specified location. Null if there's no
      * complex block there.
-     *
+     * 
      * @param x
      *            x
      * @param y
@@ -493,23 +483,24 @@ public class Server {
      * @return complex block
      */
     public ComplexBlock getOnlyComplexBlock(int x, int y, int z) {
-        bm localav = server.e.m(x, y, z);
-        if (localav != null) {
-            if (localav instanceof kc) {
-                return new Chest((kc) localav);
-            } else if (localav instanceof lv) {
-                return new Sign((lv) localav);
-            } else if (localav instanceof ez) {
-                return new Furnace((ez) localav);
-            } else if (localav instanceof db) {
-                return new MobSpawner((db) localav);
-            }
-        }
+        OTileEntity localav = server.e.m(x, y, z);
+        if (localav != null)
+            if (localav instanceof OTileEntityChest)
+                return new Chest((OTileEntityChest) localav);
+            else if (localav instanceof OTileEntitySign)
+                return new Sign((OTileEntitySign) localav);
+            else if (localav instanceof OTileEntityFurnace)
+                return new Furnace((OTileEntityFurnace) localav);
+            else if (localav instanceof OTileEntityMobSpawner)
+                return new MobSpawner((OTileEntityMobSpawner) localav);
+            else if (localav instanceof OTileEntityDispenser)
+                return new Dispenser((OTileEntityDispenser) localav);
         return null;
     }
 
     /**
      * Drops an item at the specified location
+     * 
      * @param loc
      * @param itemId
      */
@@ -519,6 +510,7 @@ public class Server {
 
     /**
      * Drops an item at the specified location
+     * 
      * @param x
      * @param y
      * @param z
@@ -530,6 +522,7 @@ public class Server {
 
     /**
      * Drops an item with desired quantity at the specified location
+     * 
      * @param loc
      * @param itemId
      * @param quantity
@@ -540,6 +533,7 @@ public class Server {
 
     /**
      * Drops an item with desired quantity at the specified location
+     * 
      * @param x
      * @param y
      * @param z
@@ -551,14 +545,16 @@ public class Server {
         double d2 = server.e.l.nextFloat() * 0.7F + (1.0F - 0.7F) * 0.5D;
         double d3 = server.e.l.nextFloat() * 0.7F + (1.0F - 0.7F) * 0.5D;
 
-        ic localgl = new ic(server.e, x + d1, y + d2, z + d3, new jl(itemId, quantity,0));
+        OEntityItem localgl = new OEntityItem(server.e, x + d1, y + d2, z + d3, new OItemStack(itemId, quantity, 0));
         localgl.c = 10;
         server.e.a(localgl);
     }
 
     /**
      * Forces the server to update the physics for blocks around the given block
-     * @param block the block that changed
+     * 
+     * @param block
+     *            the block that changed
      */
     public void updateBlockPhysics(Block block) {
         updateBlockPhysics(block.getX(), block.getY(), block.getZ(), block.getData());
@@ -566,19 +562,26 @@ public class Server {
 
     /**
      * Forces the server to update the physics for blocks around the given block
-     * @param x the X coordinate of the block
-     * @param y the Y coordinate of the block
-     * @param z the Z coordinate of the block
-     * @param data the new data for the block
+     * 
+     * @param x
+     *            the X coordinate of the block
+     * @param y
+     *            the Y coordinate of the block
+     * @param z
+     *            the Z coordinate of the block
+     * @param data
+     *            the new data for the block
      */
     public void updateBlockPhysics(int x, int y, int z, int data) {
         server.e.c(x, y, z, data);
     }
 
     /**
-     * Adds a runnable to the Server Queue, so that it will be executed in the Server Thread.
-     *  
-     * @param r - the runnable
+     * Adds a runnable to the Server Queue, so that it will be executed in the
+     * Server Thread.
+     * 
+     * @param r
+     *            - the runnable
      */
     public void addToServerQueue(Runnable r) {
         addToServerQueue(r, 0L);
@@ -586,14 +589,16 @@ public class Server {
 
     /**
      * Executes a runnable in the server thread after a specified delay.
-     *  
-     * @param r           - the runnable
-     * @param delayMillis - the delay in milliseconds
+     * 
+     * @param r
+     *            - the runnable
+     * @param delayMillis
+     *            - the delay in milliseconds
      */
     public void addToServerQueue(Runnable r, long delayMillis) {
-        im.add(r, delayMillis);
+        OEntityTracker.add(r, delayMillis);
     }
-    
+
     /**
      * Saves all player inventories to file
      */
@@ -605,7 +610,8 @@ public class Server {
      * Checks to see whether or not the chunk containing the given block is
      * loaded into memory.
      * 
-     * @param block the Block to check
+     * @param block
+     *            the Block to check
      * @return true if the chunk is loaded
      */
     public boolean isChunkLoaded(Block block) {
@@ -616,52 +622,62 @@ public class Server {
      * Checks to see whether or not the chunk containing the given block
      * coordinates is loaded into memory.
      * 
-     * @param x a block x-coordinate
-     * @param y a block y-coordinate
-     * @param z a block z-coordinate
+     * @param x
+     *            a block x-coordinate
+     * @param y
+     *            a block y-coordinate
+     * @param z
+     *            a block z-coordinate
      * @return true if the chunk is loaded
      */
     public boolean isChunkLoaded(int x, int y, int z) {
-        return this.server.e.A.a(x >> 4, z >> 4);
+        return server.e.A.a(x >> 4, z >> 4);
     }
 
     /**
-     * Loads the chunk containing the given block. If the chunk does not
-     * exist, it will be generated.
-     *
-     * @param block the Block to check
+     * Loads the chunk containing the given block. If the chunk does not exist,
+     * it will be generated.
+     * 
+     * @param block
+     *            the Block to check
      */
     public void loadChunk(Block block) {
         loadChunk(block.getX(), block.getY(), block.getZ());
     }
 
     /**
-     * Loads the chunk containing the given block coordinates. If the chunk
-     * does not exist, it will be generated.
-     *
-     * @param x a block x-coordinate
-     * @param y a block y-coordinate
-     * @param z a block z-coordinate
+     * Loads the chunk containing the given block coordinates. If the chunk does
+     * not exist, it will be generated.
+     * 
+     * @param x
+     *            a block x-coordinate
+     * @param y
+     *            a block y-coordinate
+     * @param z
+     *            a block z-coordinate
      */
     public void loadChunk(int x, int y, int z) {
         loadChunk(x >> 4, z >> 4);
     }
 
     /**
-     * Loads the chunk containing the given chunk coordinates. If the chunk
-     * does not exist, it will be generated.
-     *
-     * @param x a chunk x-coordinate
-     * @param z a chunk z-coordinate
+     * Loads the chunk containing the given chunk coordinates. If the chunk does
+     * not exist, it will be generated.
+     * 
+     * @param x
+     *            a chunk x-coordinate
+     * @param z
+     *            a chunk z-coordinate
      */
     public void loadChunk(int x, int z) {
-        this.server.e.A.d(x, z);
+        server.e.A.d(x, z);
     }
 
     /**
      * Checks if the provided block is being powered through redstone
      * 
-     * @param block Block to check
+     * @param block
+     *            Block to check
      * @return true if the block is being powered
      */
     public boolean isBlockPowered(Block block) {
@@ -670,20 +686,24 @@ public class Server {
 
     /**
      * Checks if the provided block is being powered through redstone
-     *
-     * @param x a block x-coordinate
-     * @param y a block y-coordinate
-     * @param z a block z-coordinate
+     * 
+     * @param x
+     *            a block x-coordinate
+     * @param y
+     *            a block y-coordinate
+     * @param z
+     *            a block z-coordinate
      * @return true if the block is being powered
      */
     public boolean isBlockPowered(int x, int y, int z) {
-        return this.server.e.o(x, y, z);
+        return server.e.o(x, y, z);
     }
 
     /**
      * Checks if the provided block is being indirectly powered through redstone
-     *
-     * @param block Block to check
+     * 
+     * @param block
+     *            Block to check
      * @return true if the block is being indirectly powered
      */
     public boolean isBlockIndirectlyPowered(Block block) {
@@ -692,13 +712,16 @@ public class Server {
 
     /**
      * Checks if the provided block is being indirectly powered through redstone
-     *
-     * @param x a block x-coordinate
-     * @param y a block y-coordinate
-     * @param z a block z-coordinate
+     * 
+     * @param x
+     *            a block x-coordinate
+     * @param y
+     *            a block y-coordinate
+     * @param z
+     *            a block z-coordinate
      * @return true if the block is being indirectly powered
      */
     public boolean isBlockIndirectlyPowered(int x, int y, int z) {
-        return this.server.e.o(x, y, z);
+        return server.e.o(x, y, z);
     }
 }

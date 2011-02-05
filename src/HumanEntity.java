@@ -1,6 +1,6 @@
 /**
- *
- * @author 
+ * 
+ * @author
  */
 public class HumanEntity extends LivingEntity {
     /**
@@ -14,16 +14,18 @@ public class HumanEntity extends LivingEntity {
      * 
      * @param human
      */
-    public HumanEntity(hl human) {
+    public HumanEntity(OEntityPlayer human) {
         super(human);
     }
 
     /**
      * Returns the entity we're wrapping.
+     * 
      * @return
      */
-    public hl getEntity() {
-        return (hl) entity;
+    @Override
+    public OEntityPlayer getEntity() {
+        return (OEntityPlayer) entity;
     }
 
     /**

@@ -1,9 +1,8 @@
-//public class Workbench extends ItemArray<ju> implements Inventory {
-public class Workbench {
-/*private final jg workbench;
+public class Workbench extends ItemArray<OInventoryCraftResult> implements Inventory {
+    private final OCraftingInventoryWorkbenchCB workbench;
 
-    public Workbench(ig block) {
-        super((ju)block.b);
+    public Workbench(OCraftingInventoryWorkbenchCB block) {
+        super((OInventoryCraftResult) block.b);
         workbench = block;
     }
 
@@ -13,7 +12,7 @@ public class Workbench {
     }
 
     public void update(Player player) {
-        workbench.a((hl)player.getUser());
+        workbench.a((OEntityPlayer) player.getUser());
     }
 
     public String getName() {
@@ -22,5 +21,5 @@ public class Workbench {
 
     public void setName(String value) {
         container.setName(value);
-    }*/
+    }
 }

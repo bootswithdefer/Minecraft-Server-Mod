@@ -7,27 +7,30 @@ public class Mob extends LivingEntity {
     /**
      * Creates a mob interface
      * 
-     * @param locallb name of mob
-     */
-    public Mob(mj locallb) {
-        super(locallb);
-    }
-    
-    /**
-     * Creates a mob interface 
-     * 
-     * @param mob
+     * @param locallb
      *            name of mob
      */
-    public Mob(String mob) {
-        this((mj) jn.a(mob, etc.getMCServer().e));
+    public Mob(OEntityLiving locallb) {
+        super(locallb);
     }
 
     /**
      * Creates a mob interface
      * 
-     * @param mobName name of mob
-     * @param location location of mob
+     * @param mob
+     *            name of mob
+     */
+    public Mob(String mob) {
+        this((OEntityLiving) OEntityList.a(mob, etc.getMCServer().e));
+    }
+
+    /**
+     * Creates a mob interface
+     * 
+     * @param mobName
+     *            name of mob
+     * @param location
+     *            location of mob
      */
     public Mob(String mobName, Location location) {
         this(mobName);
@@ -47,13 +50,13 @@ public class Mob extends LivingEntity {
      * @param rider
      */
     public void spawn(Mob rider) {
-        fv localff = etc.getMCServer().e;
+        OWorld localff = etc.getMCServer().e;
 
         entity.c(getX() + 0.5f, getY(), getZ() + 0.5f, getRotation(), 0f);
         localff.a(entity);
 
         if (rider != null) {
-            mj mob2 = rider.getMob();
+            OEntityLiving mob2 = rider.getMob();
             mob2.c(getX(), getY(), getZ(), getRotation(), 0f);
             localff.a(mob2);
             mob2.e(entity);
@@ -66,7 +69,7 @@ public class Mob extends LivingEntity {
      * @return name
      */
     public String getName() {
-        return jn.b(entity);
+        return OEntityList.b(entity);
     }
 
     /**
@@ -75,12 +78,12 @@ public class Mob extends LivingEntity {
     public void dropLoot() {
         getEntity().f(null);
     }
-    
+
+    @Override
     public void setHealth(int health) {
         super.setHealth(health);
-        if (health <= 0) {
+        if (health <= 0)
             dropLoot();
-        }
     }
 
     /**
@@ -88,7 +91,7 @@ public class Mob extends LivingEntity {
      * 
      * @return
      */
-    public mj getMob() {
+    public OEntityLiving getMob() {
         return getEntity();
     }
 
@@ -100,9 +103,9 @@ public class Mob extends LivingEntity {
      * @return true of mob is valid
      */
     public static boolean isValid(String mob) {
-        if (mob == null) {
+        if (mob == null)
             return false;
-        }
-        return jn.a(mob, etc.getMCServer().e) instanceof mj;
+        OEntity c = OEntityList.a(mob, etc.getMCServer().e);
+        return c instanceof OIMobs || c instanceof OIAnimals;
     }
 }
