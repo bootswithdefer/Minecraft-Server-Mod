@@ -483,7 +483,7 @@ public class Player extends HumanEntity implements MessageReceiver {
                 } else
                     sendMessage(Colors.Rose + "Can't find user " + split[1] + ".");
             } else if (split[0].equalsIgnoreCase("/ban")) {
-                if (split.length < 3) {
+                if (split.length < 2) {
                     sendMessage(Colors.Rose + "Correct usage is: /ban [player] [reason]");
                     return;
                 }
